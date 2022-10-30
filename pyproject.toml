@@ -1,0 +1,31 @@
+[tool.black]
+line-length = 120
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+# A regex preceded with ^/ will apply only to files and directories
+# in the root of the project.
+^/foo.py  # exclude a file named foo.py in the root of the project (in addition to the defaults)
+'''
+
+[tool.mypy]
+python_version = '3.10'
+plugins = ["sqlalchemy.ext.mypy.plugin"]
+ignore_missing_imports = 'True'
+
+[tool.isort]
+profile = "black"
+skip = ["venv", "migrations", "apps.py", "alembic/versions"]
+virtual_env = './venv'
+line_length = 120
+known_third_party = ["PIL", "websocket"]
+sections= ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+# https://docs.pytest.org/en/6.2.x/reference.html
+[tool.pytest.ini_options]
+minversion = "6.2"
+env_files = [
+    ".env",
+    ".test.env",
+    ".deploy.env",
+]
