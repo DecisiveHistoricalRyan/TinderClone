@@ -74,8 +74,8 @@ users = Table(
 likes = Table(
     "tinder_clone_likes",
     mapper_registry.metadata,
-    Column("liker_id", GUID, ForeignKey(users.name + ".id")),
-    Column("liked_id", GUID, ForeignKey(users.name + ".id")),
+    Column("user_id", GUID, ForeignKey(users.name + ".id")),
+    Column("liked_user_id", GUID, ForeignKey(users.name + ".id")),
 )
 
 
@@ -84,19 +84,19 @@ def start_mappers():
         models.User,
         users,
         properties={
-            "likes_on": relationship(
+            "users_liked_by_self": relationship(
                 models.User,
                 secondary=likes,
-                primaryjoin=id == likes.c.liker_id,
-                secondaryjoin=id == likes.c.liked_id,
-                back_populates="liked_by",
+                primaryjoin=id == likes.c.user_id,
+                secondaryjoin=id == likes.c.liked_user_id,
+                back_populates="users_liked_by_self",
             ),
-            "liked_by": relationship(
+            "users_who_like_self": relationship(
                 models.User,
                 secondary=likes,
-                primaryjoin=id == likes.c.liked_id,
-                secondaryjoin=id == likes.c.liker_id,
-                back_populates="likes_on",
+                primaryjoin=id == likes.c.liked_user_id,
+                secondaryjoin=id == likes.c.user_id,
+                back_populates="users_who_like_self",
             ),
         },
         eager_defaults=True,
