@@ -19,11 +19,11 @@ class User:
     description: str = ""
 
     # self means the user of a row
-    users_liked_by_self: list = field(default_factory=list)  # Mapped
-    users_who_like_self: list = field(default_factory=list)
+    users_liked_by_self: list["User"] = field(default_factory=list)  # Mapped
+    users_who_like_self: list["User"] = field(default_factory=list)
 
-    users_disliked_by_self: list = field(default_factory=list)
-    users_who_dislike_self: list = field(default_factory=list)
+    users_disliked_by_self: list["User"] = field(default_factory=list)
+    users_who_dislike_self: list["User"] = field(default_factory=list)
 
     create_dt: datetime = field(init=False)
     update_dt: datetime = field(init=False)

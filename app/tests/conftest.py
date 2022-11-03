@@ -17,7 +17,7 @@ def event_loop():
 
 @pytest_asyncio.fixture(scope="session")
 async def aio_sqlite_engine():
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True)
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True, echo=True)
     async with engine.connect() as conn:
         async with conn.begin():
             await conn.run_sync(metadata.create_all)

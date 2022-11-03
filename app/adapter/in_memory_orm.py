@@ -87,16 +87,18 @@ def start_mappers():
             "users_liked_by_self": relationship(
                 models.User,
                 secondary=likes,
-                primaryjoin=id == likes.c.user_id,
-                secondaryjoin=id == likes.c.liked_user_id,
-                back_populates="users_liked_by_self",
+                primaryjoin="models.User.id == tinder_clone_likes.c.user_id",
+                secondaryjoin="models.User.id == tinder_clone_likes.c.liked_user_id",
+                back_populates="users_who_like_self",
+                # lazy="selectin"
             ),
             "users_who_like_self": relationship(
                 models.User,
                 secondary=likes,
-                primaryjoin=id == likes.c.liked_user_id,
-                secondaryjoin=id == likes.c.user_id,
-                back_populates="users_who_like_self",
+                primaryjoin="models.User.id == tinder_clone_likes.c.liked_user_id",
+                secondaryjoin="models.User.id == tinder_clone_likes.c.user_id",
+                back_populates="users_liked_by_self",
+                # lazy="selectin"
             ),
         },
         eager_defaults=True,
