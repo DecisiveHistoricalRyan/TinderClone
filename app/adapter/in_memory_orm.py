@@ -75,7 +75,8 @@ likes = Table(
     "tinder_clone_likes",
     mapper_registry.metadata,
     Column("user_id", GUID, ForeignKey(users.name + ".id")),
-    Column("liked_user_id", GUID, ForeignKey(users.name + ".id")),
+    Column("liked_user_id", GUID, ForeignKey(users.name + ".id"), nullable=True),
+    Column("disliked_user_id", GUID, ForeignKey(users.name + ".id"), nullable=True),
 )
 
 
@@ -99,6 +100,20 @@ def start_mappers():
                 secondaryjoin="models.User.id == tinder_clone_likes.c.user_id",
                 back_populates="users_liked_by_self",
                 # lazy="selectin"
+            ),
+            "users_disliked_by_self": relationship(
+                models.User,
+                secondary=likes,
+                primaryjoin="models.User.id == tinder_clone_likes.c.user_id",
+                secondaryjoin="models.User.id == tinder_clone_likes.c.disliked_user_id",
+                back_populates="users_who_dislike_self",
+            ),
+            "users_who_dislike_self": relationship(
+                models.User,
+                secondary=likes,
+                primaryjoin="models.User.id == tinder_clone_likes.c.disliked_user_id",
+                secondaryjoin="models.User.id == tinder_clone_likes.c.user_id",
+                back_populates="users_disliked_by_self",
             ),
         },
         eager_defaults=True,
