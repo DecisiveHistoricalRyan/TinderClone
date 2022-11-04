@@ -19,7 +19,7 @@ def create_user():
     user = User(
         id=str(id),
         name=my_faker.name(),
-        age=random.randint(3, 20),
+        age=random.randint(19, 100),
         gender=Gender.Male.value,
         school="KNSU",
         phone=my_faker.phone_number(),
@@ -61,7 +61,7 @@ async def test_create_user(session: AsyncSession):
 
 
 @pytest.mark.asyncio
-async def test_user_collection_feature(session: AsyncSession):
+async def test_user_like_collection_feature(session: AsyncSession):
     """
     Test if a user presses a like button on a certain user,
     the like-pressed user can also see the user on 'users_who_like_self' collection
@@ -87,3 +87,32 @@ async def test_user_collection_feature(session: AsyncSession):
     # THEN
     assert us.users_liked_by_self[0].id == user2.id
     assert us.users_liked_by_self[0].users_who_like_self[0].id == user1.id
+
+
+@pytest.mark.asyncio
+async def test_user_dislike_collection_feature(session: AsyncSession):
+    """
+    Test if a user presses a dislike button on a certain user,
+    the dislike-pressed user can also see the user on 'users_who_dislike_self' collection
+    """
+
+    # GIVEN
+    user1 = create_user()
+    user2 = create_user()
+
+    session.add_all((user1, user2))
+    await session.commit()
+
+    user1.users_disliked_by_self.append(user2)
+    # user2.users_who_like_self.append(user1)
+    await session.commit()
+
+    # WHEN
+    select_construct: Select = select(User)
+    q: ChunkedIteratorResult = await session.execute(select_construct.where(User.id == user1.id))
+
+    us: User = q.scalars().first()
+
+    # THEN
+    assert us.users_disliked_by_self[0].id == user2.id
+    assert us.users_disliked_by_self[0].users_who_dislike_self[0].id == user1.id
