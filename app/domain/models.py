@@ -6,7 +6,6 @@ from uuid import UUID, uuid4
 
 @dataclass
 class User:
-
     id: UUID
     name: str
     age: int  # Index
