@@ -75,8 +75,8 @@ likes = Table(
     "tinder_clone_likes",
     mapper_registry.metadata,
     Column("user_id", GUID, ForeignKey(users.name + ".id")),
-    Column("liked_user_id", GUID, ForeignKey(users.name + ".id"), nullable=True),
-    Column("disliked_user_id", GUID, ForeignKey(users.name + ".id"), nullable=True),
+    Column("liked_user_id", GUID, ForeignKey(users.name + ".id")),
+    Column("disliked_user_id", GUID, ForeignKey(users.name + ".id")),
 )
 
 
