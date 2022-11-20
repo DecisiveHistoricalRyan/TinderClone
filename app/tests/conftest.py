@@ -2,6 +2,7 @@ import asyncio
 
 import pytest
 import pytest_asyncio
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import clear_mappers, sessionmaker
 
@@ -35,4 +36,10 @@ async def session_factory(aio_sqlite_engine: AsyncEngine):
 
 @pytest_asyncio.fixture(scope="function")
 async def session(session_factory: AsyncSession):
-    yield session_factory()
+    session: AsyncSession = session_factory()
+    yield session
+    for table in metadata.tables.keys():
+        delete_stmt = f"DELETE FROM {table};"
+        await session.execute(text(delete_stmt))
+    await session.commit()
+    await session.close()
