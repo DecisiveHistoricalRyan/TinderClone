@@ -30,4 +30,4 @@ class User:
 
     @classmethod
     def create_user(cls, **kwargs):
-        return cls(id=uuid4(), **kwargs)
+        return cls(id=str(uuid4()), **kwargs)

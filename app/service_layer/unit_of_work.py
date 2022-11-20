@@ -43,3 +43,14 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
     async def __aenter__(self):
         self.session: AsyncSession = self.session_factory()
         self.users: SqlAlchemyRepository = SqlAlchemyRepository(model=models.User, session=self.session)
+        return self
+
+    async def __aexit__(self, *args, **kwargs):
+        await self.session.rollback()
+        await self.session.close()
+
+    async def _commit(self):
+        await self.commit()
+
+    async def _rollback(self):
+        await self.rollback()
