@@ -15,10 +15,12 @@ class AbstractRepository(ABC):
         self._add(obj)
 
     async def get(self, ref: Any):
-        await self._get(ref)
+        res = await self._get(ref)
+        return res
 
     async def list(self):
-        await self._list()
+        res = await self._list()
+        return res
 
     @abstractmethod
     def _add(self, obj):
@@ -45,7 +47,8 @@ class SqlAlchemyRepository(Generic[ModelType], AbstractRepository):
 
     async def _get(self, ref):
         q = await self.session.execute(self._base_query.where(self.model.id == ref).limit(1))
-        return q.scalars().first()
+        res = q.scalars().first()
+        return res
 
     async def _list(self):
         q = await self.session.execute(self._base_query)

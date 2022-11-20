@@ -91,6 +91,7 @@ def start_mappers():
                 primaryjoin="models.User.id == tinder_clone_likes.c.user_id",
                 secondaryjoin="models.User.id == tinder_clone_likes.c.liked_user_id",
                 back_populates="users_who_like_self",
+                collection_class=set,
                 # lazy="selectin"
             ),
             "users_who_like_self": relationship(
@@ -99,6 +100,7 @@ def start_mappers():
                 primaryjoin="models.User.id == tinder_clone_likes.c.liked_user_id",
                 secondaryjoin="models.User.id == tinder_clone_likes.c.user_id",
                 back_populates="users_liked_by_self",
+                collection_class=set,
                 # lazy="selectin"
             ),
             "users_disliked_by_self": relationship(
@@ -107,6 +109,7 @@ def start_mappers():
                 primaryjoin="models.User.id == tinder_clone_likes.c.user_id",
                 secondaryjoin="models.User.id == tinder_clone_likes.c.disliked_user_id",
                 back_populates="users_who_dislike_self",
+                collection_class=set,
             ),
             "users_who_dislike_self": relationship(
                 models.User,
@@ -114,6 +117,7 @@ def start_mappers():
                 primaryjoin="models.User.id == tinder_clone_likes.c.disliked_user_id",
                 secondaryjoin="models.User.id == tinder_clone_likes.c.user_id",
                 back_populates="users_disliked_by_self",
+                collection_class=set,
             ),
         },
         eager_defaults=True,

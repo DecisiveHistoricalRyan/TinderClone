@@ -27,9 +27,13 @@ async def like_user(msg: commands.LikeUser, *, uow: AbstractUnitOfWork):
     async with uow:
         get_user_task: Coroutine = uow.users.get(msg.user_id)
         get_liked_user_task: Coroutine = uow.users.get(msg.liked_user_id)
-        user, liked_user = await asyncio.gather(get_user_task, get_liked_user_task)
+        users: list[models.User] = await asyncio.gather(get_user_task, get_liked_user_task)
+        user, liked_user = users
         if not all((user, liked_user)):
             raise UserNotExist(f"Users With Given User Ids Do Not Exist! ids:{msg.user_id},{msg.liked_user_id} ")
 
-        user.users_liked_by_self.append(liked_user)
+        user.users_liked_by_self.add(liked_user)
+        matched = user in liked_user.users_who_like_self
         await uow.commit()
+
+        return matched
