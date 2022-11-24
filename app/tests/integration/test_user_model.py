@@ -10,6 +10,7 @@ from sqlalchemy.sql.selectable import Select
 
 from app.domain.enums import Gender
 from app.domain.models import User
+from app.tests.helpers import create_user
 
 my_faker = Faker()
 
@@ -59,8 +60,8 @@ async def test_user_like_collection_feature(session: AsyncSession):
     session.add_all((user1, user2))
     await session.commit()
 
-    user1.users_liked_by_self.append(user2)
-    # user2.users_who_like_self.append(user1)
+    user1.users_liked_by_self.add(user2)
+    # user2.users_who_like_self.add(user1)
     await session.commit()
 
     # WHEN
@@ -70,8 +71,9 @@ async def test_user_like_collection_feature(session: AsyncSession):
     us: User = q.scalars().first()
 
     # THEN
-    assert us.users_liked_by_self[0].id == user2.id
-    assert us.users_liked_by_self[0].users_who_like_self[0].id == user1.id
+
+    assert user2 in us.users_liked_by_self
+    assert user1 in user2.users_who_like_self
 
 
 @pytest.mark.asyncio
@@ -88,8 +90,8 @@ async def test_user_dislike_collection_feature(session: AsyncSession):
     session.add_all((user1, user2))
     await session.commit()
 
-    user1.users_disliked_by_self.append(user2)
-    # user2.users_who_like_self.append(user1)
+    user1.users_disliked_by_self.add(user2)
+    # user2.users_who_like_self.add(user1)
     await session.commit()
 
     # WHEN
@@ -99,5 +101,5 @@ async def test_user_dislike_collection_feature(session: AsyncSession):
     us: User = q.scalars().first()
 
     # THEN
-    assert us.users_disliked_by_self[0].id == user2.id
-    assert us.users_disliked_by_self[0].users_who_dislike_self[0].id == user1.id
+    assert user2 in us.users_disliked_by_self
+    assert user1 in user2.users_who_dislike_self
