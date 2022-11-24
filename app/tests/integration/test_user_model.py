@@ -1,5 +1,5 @@
 import random
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pytest
 from faker import Faker
@@ -31,24 +31,9 @@ def create_user():
     return user
 
 
+@pytest.mark.parametrize("user_id", [UUID("6882c47e-4355-4399-968a-c15f5a949e7e")])
 @pytest.mark.asyncio
-async def test_create_user(session: AsyncSession):
-    id = uuid4()
-
-    # GIVEN
-    user = User(
-        id=str(id),
-        name="Migo",
-        age=32,
-        gender=Gender.Male.value,
-        school="KNSU",
-        phone="010-0000-0000",
-        description="This is me",
-        email="saka90030@gmail.com",
-        photo=[my_faker.url()],
-        job="programmer",
-    )
-    session.add(user)
+async def test_create_user(session: AsyncSession, user: User, user_id: UUID):
     await session.commit()
 
     # WHEN
@@ -57,7 +42,7 @@ async def test_create_user(session: AsyncSession):
 
     # THEN
     assert us is not None
-    assert us.id == str(id)
+    assert us.id == str(user_id)
 
 
 @pytest.mark.asyncio
