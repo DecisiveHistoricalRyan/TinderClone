@@ -1,5 +1,6 @@
 from pydantic import BaseSettings
 
+
 class Settings(BaseSettings):
     POSTGRES_PROTOCOL = ""
     POSTGRES_USER = ""
