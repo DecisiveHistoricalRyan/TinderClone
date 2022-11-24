@@ -15,7 +15,7 @@ class CreateUser(Command):
     phone: str
     description: str
     email: str
-    photo: str
+    photo: list[str]
     job: str
 
 

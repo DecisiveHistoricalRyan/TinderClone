@@ -3,12 +3,12 @@ from __future__ import annotations
 from collections import deque
 from dataclasses import dataclass, field
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 
 @dataclass
 class User:
-    id: UUID
+    id: str
     name: str
     age: int  # Index
     gender: str  # Index
