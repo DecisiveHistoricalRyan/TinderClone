@@ -92,7 +92,7 @@ def start_mappers():
                 secondaryjoin="models.User.id == tinder_clone_likes.c.liked_user_id",
                 back_populates="users_who_like_self",
                 collection_class=set,
-                # lazy="selectin"
+                lazy="selectin",
             ),
             "users_who_like_self": relationship(
                 models.User,
@@ -101,7 +101,7 @@ def start_mappers():
                 secondaryjoin="models.User.id == tinder_clone_likes.c.user_id",
                 back_populates="users_liked_by_self",
                 collection_class=set,
-                # lazy="selectin"
+                lazy="selectin",
             ),
             "users_disliked_by_self": relationship(
                 models.User,
