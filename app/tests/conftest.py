@@ -1,4 +1,5 @@
 import asyncio
+import copy
 import uuid
 from typing import AsyncGenerator
 
@@ -50,8 +51,8 @@ async def session(session_factory: AsyncSession):
 
 
 @pytest_asyncio.fixture(scope="function")
-def user_id() -> uuid.UUID:
-    return uuid.uuid4()
+def user_id() -> str:
+    return str(uuid.uuid4())
 
 
 @pytest_asyncio.fixture(scope="function")
@@ -101,8 +102,7 @@ def user_job() -> str:
 
 @pytest_asyncio.fixture(scope="function")
 async def user(
-    session: AsyncSession,
-    user_id: uuid.UUID,
+    user_id: str,
     user_name: str,
     user_age: int,
     user_gender: str,
@@ -125,87 +125,13 @@ async def user(
         photo=user_photo,
         job=user_job,
     )
-    session.add(user)
     yield user
-    await session.delete(user)
+
+
+user2 = copy.deepcopy(user)
 
 
 @pytest_asyncio.fixture(scope="function")
-def user_id() -> uuid.UUID:
-    return uuid.uuid4()
-
-
-@pytest_asyncio.fixture(scope="function")
-def user_name() -> str:
-    return "Migo"
-
-
-@pytest_asyncio.fixture(scope="function")
-def user_age() -> int:
-    return 32
-
-
-@pytest_asyncio.fixture(scope="function")
-def user_gender() -> str:
-    return Gender.Male.value
-
-
-@pytest_asyncio.fixture(scope="function")
-def user_school() -> str:
-    return "KNSU"
-
-
-@pytest_asyncio.fixture(scope="function")
-def user_phone() -> str:
-    return "010-0000-0000"
-
-
-@pytest_asyncio.fixture(scope="function")
-def user_description() -> str:
-    return "This is me"
-
-
-@pytest_asyncio.fixture(scope="function")
-def user_email() -> str:
-    return "saka90030@gmail.com"
-
-
-@pytest_asyncio.fixture(scope="function")
-def user_photo() -> list[str]:
-    return ["https://i.imgur.com/RefcteE.jpeg"]
-
-
-@pytest_asyncio.fixture(scope="function")
-def user_job() -> str:
-    return "programmer"
-
-
-@pytest_asyncio.fixture(scope="function")
-async def user(
-    session: AsyncSession,
-    user_id: uuid.UUID,
-    user_name: str,
-    user_age: int,
-    user_gender: str,
-    user_school: str,
-    user_phone: str,
-    user_description: str,
-    user_email: str,
-    user_photo: list[str],
-    user_job: str,
-) -> AsyncGenerator:
-    user = User(
-        id=user_id,
-        name=user_name,
-        age=user_age,
-        gender=user_gender,
-        school=user_school,
-        phone=user_phone,
-        description=user_description,
-        email=user_email,
-        photo=user_photo,
-        job=user_job,
-    )
-    session.add(user)
-    yield user
-    await session.delete(user)
+def two_users(user, user2):
+    user.id = str(uuid.uuid4())
+    yield user, user2
