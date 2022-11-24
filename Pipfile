@@ -9,6 +9,9 @@ aiosqlite = "*"
 greenlet = "*"
 pydantic = "*"
 asyncpg = "*"
+fastapi = "*"
+uvicorn = "*"
+httpx = "*"
 
 [dev-packages]
 pytest = "*"
