@@ -2,6 +2,7 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
+    STAGE = "local"
     POSTGRES_PROTOCOL = ""
     POSTGRES_USER = ""
     POSTGRES_PASSWORD = ""
