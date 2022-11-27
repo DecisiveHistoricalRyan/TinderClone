@@ -9,6 +9,9 @@ my_faker = Faker()
 
 
 def create_user():
+    """
+    Test For User Creation
+    """
     id = uuid4()
     user = models.User(
         id=str(id),
