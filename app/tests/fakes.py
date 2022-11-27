@@ -4,7 +4,7 @@ from app.domain import models
 from app.service_layer.unit_of_work import SqlAlchemyRepository, SqlAlchemyUnitOfWork
 
 
-class FakeSqlUnitOfWork(SqlAlchemyUnitOfWork):
+class FakeSqlAlchemyUnitOfWork(SqlAlchemyUnitOfWork):
     def __init__(self, session_factory=None):
         self.session_factory = session_factory
 

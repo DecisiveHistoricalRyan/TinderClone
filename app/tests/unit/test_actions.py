@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.domain import commands
 from app.domain.enums import Gender
 from app.service_layer import handlers
-from app.tests.fakes import FakeSqlUnitOfWork
+from app.tests.fakes import FakeSqlAlchemyUnitOfWork
 from app.tests.helpers import create_user
 
 my_faker = Faker()
@@ -26,7 +26,7 @@ async def test_create_user(session: AsyncSession):
         photo=[my_faker.image_url()],
         job=my_faker.job(),
     )
-    uow = FakeSqlUnitOfWork(session)
+    uow = FakeSqlAlchemyUnitOfWork(session)
 
     await handlers.create_user(cmd, uow=uow)
 
@@ -46,7 +46,7 @@ async def test_like_user(session: AsyncSession):
     await session.commit()
 
     cmd = commands.LikeUser(user_id=user1.id, liked_user_id=user2.id)
-    uow = FakeSqlUnitOfWork(session)
+    uow = FakeSqlAlchemyUnitOfWork(session)
 
     await handlers.like_user(msg=cmd, uow=uow)
     user2_ = next(user for user in user1.users_liked_by_self)
@@ -59,7 +59,7 @@ async def test_see_matches(session: AsyncSession):
     user2 = create_user()
     session.add_all((user1, user2))
     await session.commit()
-    uow = FakeSqlUnitOfWork(session)
+    uow = FakeSqlAlchemyUnitOfWork(session)
 
     cmd = commands.LikeUser(user_id=user1.id, liked_user_id=user2.id)
     await handlers.like_user(msg=cmd, uow=uow)
