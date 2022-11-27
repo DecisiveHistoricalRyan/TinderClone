@@ -39,7 +39,7 @@ async def aio_sqlite_engine():
 async def session_factory(aio_sqlite_engine: AsyncEngine):
     async with aio_sqlite_engine.connect() as conn:
         session_factory: sessionmaker = sessionmaker(
-            conn,
+            conn,  # type: ignore
             expire_on_commit=False,
             autoflush=False,
             class_=AsyncSession,
