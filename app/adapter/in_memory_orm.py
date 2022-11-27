@@ -63,7 +63,7 @@ users = Table(
     Column("update_dt", TimeStamp(), default=func.now(), onupdate=func.current_timestamp(), server_default=func.now()),
     Column("name", String),
     Column("age", Integer),
-    Column("gender", Enum(Gender)),
+    Column("gender", String),
     Column("job", String),
     Column("phone", String),
     Column("email", String),

@@ -1,3 +1,5 @@
+import uuid
+
 import pytest_asyncio
 from starlette.testclient import TestClient
 
@@ -21,7 +23,7 @@ def user_age() -> int:
 
 @pytest_asyncio.fixture(scope="function")
 def user_gender() -> str:
-    return 'male'
+    return "male"
 
 
 @pytest_asyncio.fixture(scope="function")
@@ -56,6 +58,7 @@ def user_job() -> str:
 
 @pytest_asyncio.fixture(scope="function")
 async def user_data(
+    client: TestClient,
     user_name: str,
     user_age: int,
     user_gender: str,
@@ -78,13 +81,9 @@ async def user_data(
         job=user_job,
     )
 
-    tc = TestClient(app)
-    url = app.url_path_for('create_user')
-    res = tc.post(
+    url = app.url_path_for("create_user")
+    res = client.post(
         url=url,
         json=data,
     )
-
-    return data, res.status_code
-
-
+    return data, res

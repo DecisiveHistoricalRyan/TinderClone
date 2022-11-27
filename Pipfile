@@ -7,11 +7,11 @@ name = "pypi"
 sqlalchemy = "*"
 aiosqlite = "*"
 greenlet = "*"
-pydantic = "*"
 asyncpg = "*"
 fastapi = "*"
 uvicorn = "*"
 httpx = "*"
+pydantic = {extras = ["dotenv"], version = "*"}
 
 [dev-packages]
 pytest = "*"
@@ -24,3 +24,6 @@ faker = "*"
 
 [requires]
 python_version = "3.10"
+
+[pipenv]
+allow_prereleases = true

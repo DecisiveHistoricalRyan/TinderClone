@@ -1,10 +1,11 @@
 import asyncio
 import copy
 import uuid
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Generator
 
 import pytest
 import pytest_asyncio
+from fastapi.testclient import TestClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import clear_mappers, sessionmaker
@@ -12,6 +13,8 @@ from sqlalchemy.orm import clear_mappers, sessionmaker
 from app.adapter.in_memory_orm import metadata, start_mappers
 from app.domain.enums import Gender
 from app.domain.models import User
+from app.tests.fakes import FakeSqlAlchemyUnitOfWork
+from app.entrypoints import deps
 
 
 @pytest.fixture(scope="session")
@@ -135,3 +138,13 @@ user2 = copy.deepcopy(user)
 def two_users(user, user2):
     user.id = str(uuid.uuid4())
     yield user, user2
+
+
+@pytest.fixture(scope="function")
+def client(session: AsyncSession) -> Generator:
+    from app.main import app
+
+    app.dependency_overrides[deps.get_uow] = lambda: FakeSqlAlchemyUnitOfWork(session_factory=session)
+
+    with TestClient(app) as tc:
+        yield tc
