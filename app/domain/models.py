@@ -6,8 +6,12 @@ from datetime import datetime
 from uuid import uuid4
 
 
+class Base:
+    id: str
+
+
 @dataclass
-class User:
+class User(Base):
     id: str
     name: str
     age: int  # Index

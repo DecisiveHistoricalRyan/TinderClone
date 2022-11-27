@@ -5,7 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.sql import Select
 
-ModelType = TypeVar("ModelType", bound=object)
+from app.domain.models import Base
+
+ModelType = TypeVar("ModelType", bound=Base)
 
 
 class AbstractRepository(ABC):
