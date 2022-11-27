@@ -2,11 +2,12 @@ import starlette.status
 from fastapi import APIRouter, Depends
 from fastapi.responses import PlainTextResponse
 
-from .schemas import UserIn
-from app.service_layer.unit_of_work import AbstractUnitOfWork, SqlAlchemyUnitOfWork
-from app.service_layer import handlers
 from app.domain import commands
 from app.entrypoints import deps
+from app.service_layer import handlers
+from app.service_layer.unit_of_work import AbstractUnitOfWork
+
+from .schemas import UserIn
 
 router = APIRouter()
 

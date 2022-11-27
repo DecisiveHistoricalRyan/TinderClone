@@ -1,12 +1,11 @@
 from collections import deque
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, MetaData, String, Table, TypeDecorator, event, func
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, MetaData, String, Table, TypeDecorator, event, func
 from sqlalchemy.dialects import sqlite
 from sqlalchemy.orm import registry, relationship
 
 from app.domain import models
-from app.domain.enums import Gender
 
 metadata = MetaData()
 mapper_registry = registry(metadata=metadata)

@@ -34,7 +34,7 @@ async def test_create_user(session: AsyncSession):
         """
         SELECT * FROM tinder_clone_users
         """
-    )
+    )  # type: ignore
     _ = q.scalars().first()
 
 

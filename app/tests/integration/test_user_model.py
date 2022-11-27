@@ -1,7 +1,7 @@
 from uuid import UUID
 
 import pytest
-from sqlalchemy.engine.result import ChunkedIteratorResult
+from sqlalchemy.engine.result import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.sql.selectable import Select
@@ -17,7 +17,7 @@ async def test_create_user(session: AsyncSession, user: User, user_id: UUID):
 
     # WHEN
     q = await session.execute(select(User))
-    us: User = q.scalars().first()
+    us: User | None = q.scalars().first()
 
     # THEN
     assert us is not None
@@ -47,12 +47,13 @@ async def test_user_like_collection_feature(session: AsyncSession, two_users):
 
     # WHEN
     select_construct: Select = select(User)
-    q: ChunkedIteratorResult = await session.execute(select_construct.where(User.id == user.id))
+    q: Result = await session.execute(select_construct.where(User.id == user.id))
 
-    us: User = q.scalars().first()
+    us: User | None = q.scalars().first()
 
     # THEN
-
+    assert us is not None
+    assert us.users_liked_by_self is not None
     assert user2 in us.users_liked_by_self
     assert user in user2.users_who_like_self
 
@@ -74,10 +75,12 @@ async def test_user_dislike_collection_feature(session: AsyncSession, two_users)
 
     # WHEN
     select_construct: Select = select(User)
-    q: ChunkedIteratorResult = await session.execute(select_construct.where(User.id == user1.id))
+    q: Result = await session.execute(select_construct.where(User.id == user1.id))
 
-    us: User = q.scalars().first()
+    us: User | None = q.scalars().first()
 
     # THEN
+    assert us is not None
+    assert us.users_liked_by_self is not None
     assert user2 in us.users_disliked_by_self
     assert user1 in user2.users_who_dislike_self

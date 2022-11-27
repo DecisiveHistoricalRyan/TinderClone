@@ -13,8 +13,8 @@ from sqlalchemy.orm import clear_mappers, sessionmaker
 from app.adapter.in_memory_orm import metadata, start_mappers
 from app.domain.enums import Gender
 from app.domain.models import User
-from app.tests.fakes import FakeSqlAlchemyUnitOfWork
 from app.entrypoints import deps
+from app.tests.fakes import FakeSqlAlchemyUnitOfWork
 
 
 @pytest.fixture(scope="session")
@@ -38,12 +38,17 @@ async def aio_sqlite_engine():
 @pytest_asyncio.fixture(scope="function")
 async def session_factory(aio_sqlite_engine: AsyncEngine):
     async with aio_sqlite_engine.connect() as conn:
-        session_factory = sessionmaker(conn, expire_on_commit=False, autoflush=False, class_=AsyncSession)
+        session_factory = sessionmaker(
+            conn,  # type: ignore
+            expire_on_commit=False,
+            autoflush=False,
+            class_=AsyncSession,
+        )
         yield session_factory
 
 
 @pytest_asyncio.fixture(scope="function")
-async def session(session_factory: AsyncSession):
+async def session(session_factory: sessionmaker):
     session: AsyncSession = session_factory()
     yield session
     for table in metadata.tables.keys():
