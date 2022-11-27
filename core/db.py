@@ -20,6 +20,15 @@ if os.getenv("STAGE") not in ("ci_testing", "local"):
     )
     engine = create_async_engine(DATABASE_URI, future=True)
 
-async_transactional_session = sessionmaker(engine, expire_on_commit=False, autoflush=False, class_=AsyncSession)
+async_transactional_session: sessionmaker = sessionmaker(
+    engine,
+    expire_on_commit=False,
+    autoflush=False,
+    class_=AsyncSession,
+)
 autocommit_engine = engine.execution_options(isolation_level="AUTOCOMMIT") if engine is not None else None
-async_autocommit_session = sessionmaker(autocommit_engine, expire_on_commit=False, class_=AsyncSession)
+async_autocommit_session: sessionmaker = sessionmaker(
+    autocommit_engine,
+    expire_on_commit=False,
+    class_=AsyncSession,
+)
